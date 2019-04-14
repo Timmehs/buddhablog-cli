@@ -1,0 +1,23 @@
+{
+  "name": "buddhablog-cli",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "repository": "git@github.com:Timmehs/buddhablog-cli.git",
+  "author": "Tim Sandberg <tasandberg@gmail.com>",
+  "license": "MIT",
+  "bin": {
+    "buddha": "./bin/buddhablog-cli.js"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.17.1",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0"
+  },
+  "dependencies": {
+    "colors": "^1.3.3",
+    "commander": "^2.20.0"
+  }
+}
