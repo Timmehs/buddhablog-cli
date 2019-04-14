@@ -23,4 +23,8 @@ program
     console.log('Cloning BuddhaBlog from master')
   })
 
+if (!process.argv.slice(2).length) {
+  program.outputHelp()
+}
+
 program.parse(process.argv)
