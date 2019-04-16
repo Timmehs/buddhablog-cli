@@ -1,0 +1,21 @@
+{
+    "env": {
+        "node": true
+    },
+    "extends": [
+        "standard"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "settings": {
+        "react": {
+            "version": "16.0"
+        }
+    },
+    "rules": {
+        "space-before-function-paren": 0,
+        "no-extra-semi": "error"
+    }
+}
