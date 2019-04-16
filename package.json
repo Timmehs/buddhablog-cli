@@ -4,6 +4,9 @@
   "repository": "git@github.com:Timmehs/buddhablog-cli.git",
   "author": "Tim Sandberg <tasandberg@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "lint": "yarn eslint ./"
+  },
   "bin": {
     "buddha": "./bin/buddha.js"
   },

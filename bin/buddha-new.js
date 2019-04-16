@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 
 const program = require('commander')
-const mkdirp = require('mkdirp')
-const clone = require('git-clone')
 const path = require('path')
-const { green, yellow, red } = require('colors')
+const { green, red } = require('colors')
 const spawn = require('child_process').spawn
 
 const REPO_URL = 'https://github.com/Timmehs/buddhablog.git'
 
-program.parse(process.argv)
+program.usage('new <name>').parse(process.argv)
 
 if (!process.argv.slice(2).length) {
   program.outputHelp()
