@@ -1,9 +1,10 @@
-const fs = require('fs')
 const path = require('path')
 const { spawnSync } = require('child_process')
-const { logError, logSuccess, logInfo } = require('../util/output')
+const { logInfo } = require('../util/output')
+const generateFile = require('../util/generateFile')
 const settings = require('user-settings').file('.buddha-settings')
 const POSTDIR = path.join(process.cwd(), 'posts')
+const editor = settings.get('editor') || 'vim'
 
 const buildPost = (title, tags, timestamp) =>
   `title: ${title}
@@ -16,45 +17,28 @@ write content here
 `
 
 function createPost(title = '', tags = []) {
-  const editor = settings.get('editor') || 'vim'
+  logInfo('Generating timestamp...')
+  const timeStamp = spawnSync('date', ['+%Y-%m-%dT%H:%M:%S'])
+    .output[1].toString()
+    .trim()
+  const newPostPath = path.join(POSTDIR, `${timeStamp}.md`)
 
-  if (!fs.existsSync(POSTDIR)) {
-    console.log(' ')
-    logError(
-      "No posts directory found -- are sure you're inside of a BuddhaBlog project?"
+  generateFile(newPostPath, buildPost(title, tags, timeStamp), function(err) {
+    if (err) process.exit()
+    logInfo(
+      `Opening file with "${editor} ${newPostPath}" (see \`buddha config --help\` to change editor)`
     )
+    spawnSync(editor, [newPostPath], {
+      stdio: 'inherit'
+    })
     process.exit()
-  } else {
-    logInfo('Generating timestamp...')
-
-    const timeStamp = spawnSync('date', ['+%Y-%m-%dT%H:%M:%S'])
-      .output[1].toString()
-      .trim()
-
-    const newPostPath = path.join(POSTDIR, `${timeStamp}.md`)
-
-    logInfo('Building post...')
-    try {
-      fs.writeFileSync(newPostPath, buildPost(title, tags, timeStamp))
-      logSuccess(`Post creation successful ${newPostPath} ✨`)
-      logInfo(
-        `Opening file with "${editor} ${newPostPath}" (see \`buddha config --help\` to change editor)`
-      )
-      spawnSync(editor, [newPostPath], {
-        stdio: 'inherit'
-      })
-      process.exit()
-    } catch (error) {
-      logError('post creation failed :(')
-      console.error(error)
-      process.exit()
-    }
-  }
+  })
 }
 
 module.exports = function(program) {
   program
     .command('post [title] [tags...]')
+    .usage('[title] [tags...]')
     .description('Create a new blog post. Timestamp defaults to now')
     .action(createPost)
     .on('--help', function() {

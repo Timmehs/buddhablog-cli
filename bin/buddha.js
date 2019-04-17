@@ -8,6 +8,7 @@ program.version(VERSION, ' --version')
 /* Register Commands */
 require('./commands/new.js')(program)
 require('./commands/post.js')(program)
+require('./commands/page.js')(program)
 require('./commands/config.js')(program)
 
 if (!process.argv.slice(2).length) {
