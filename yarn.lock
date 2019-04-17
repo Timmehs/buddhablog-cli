@@ -1572,6 +1572,11 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
+user-settings@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/user-settings/-/user-settings-0.2.0.tgz#8284405a59b3060135cf352ec3511c8fd046707d"
+  integrity sha512-y0nkqj93bYuOaYJWAM8FhYUDg67dC9iPLY6lPwTwguP/amuSTHKAc1QSvSw16jmrKVcPyV6ti2e682vqE0Rdvw==
+
 util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"

@@ -16,6 +16,7 @@
     },
     "rules": {
         "space-before-function-paren": 0,
-        "no-extra-semi": "error"
+        "no-extra-semi": "error",
+        "indent": "error"
     }
 }
