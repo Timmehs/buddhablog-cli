@@ -17,24 +17,26 @@ write content here
 
 function createPost(title = '', tags = []) {
   const editor = settings.get('editor') || 'vim'
-  console.log('create post')
 
   if (!fs.existsSync(POSTDIR)) {
+    console.log(' ')
     logError(
       "No posts directory found -- are sure you're inside of a BuddhaBlog project?"
     )
     process.exit()
   } else {
     logInfo('Generating timestamp...')
+
     const timeStamp = spawnSync('date', ['+%Y-%m-%dT%H:%M:%S'])
       .output[1].toString()
       .trim()
+
     const newPostPath = path.join(POSTDIR, `${timeStamp}.md`)
 
     logInfo('Building post...')
     try {
       fs.writeFileSync(newPostPath, buildPost(title, tags, timeStamp))
-      logSuccess(`post creation successful! ✨ ${newPostPath}`)
+      logSuccess(`Post creation successful ${newPostPath} ✨`)
       logInfo(
         `Opening file with "${editor} ${newPostPath}" (see \`buddha config --help\` to change editor)`
       )
@@ -51,7 +53,6 @@ function createPost(title = '', tags = []) {
 }
 
 module.exports = function(program) {
-  console.log('twice')
   program
     .command('post [title] [tags...]')
     .description('Create a new blog post. Timestamp defaults to now')

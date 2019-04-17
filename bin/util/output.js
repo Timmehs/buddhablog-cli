@@ -1,5 +1,4 @@
 const { green, red, yellow, blue } = require('colors')
-
 const PREFIX = 'BuddhaBlog: '
 
 module.exports = {
