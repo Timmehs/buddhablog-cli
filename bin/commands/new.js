@@ -1,6 +1,6 @@
 const path = require('path')
 const { spawnSync } = require('child_process')
-const REPO_URL = 'https://github.com/Timmehs/buddhablog.git'
+const REPO_URL = 'https://github.com/Timmehs/buddhablog-template.git'
 const { logSuccess, logError } = require('../util/output')
 
 function createBlog(dirName, program) {
