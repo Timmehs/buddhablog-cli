@@ -1,22 +1,39 @@
 const path = require('path')
+const fs = require('fs')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const projectRoot = path.resolve(process.env.NODE_PATH)
+const { logSuccess, logInfo } = require('./bin/util/output')
+
+let htmlTemplateFilename = 'html-template.ejs'
+let templatePath = path.join(projectRoot, 'src', htmlTemplateFilename)
+
+if (fs.existsSync(templatePath)) {
+  logSuccess(`Template found! Using ${templatePath}.`)
+} else {
+  logInfo(
+    `No template found at ${templatePath}, using default. To customize place ${htmlTemplateFilename} in src/.`
+  )
+  templatePath = path.join(__dirname, htmlTemplateFilename)
+}
 
 module.exports = {
+  context: projectRoot,
   entry: {
-    main: path.resolve(process.env.NODE_ENV, 'src', 'index.js'),
-    blog: path.resolve(process.env.NODE_ENV, 'src', 'store.js')
+    main: path.resolve(projectRoot, 'src', 'index.js'),
+    blog: path.resolve(projectRoot, 'src', 'store.js')
   },
   output: {
     filename: 'assets/[name].js',
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(projectRoot, 'build'),
     publicPath: '/'
   },
   devServer: {
-    contentBase: path.resolve(__dirname, 'build'),
+    contentBase: path.resolve(projectRoot, 'build'),
     hot: true
   },
+  devtool: ['source-map'],
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.ContextReplacementPlugin(
@@ -25,24 +42,24 @@ module.exports = {
     ),
     new HtmlWebpackPlugin({
       title: require('./package.json').name,
-      template: path.resolve(process.env.NODE_PATH, 'src', 'index.ejs'),
+      template: templatePath,
       inject: false
     }),
     new webpack.HotModuleReplacementPlugin()
   ],
   resolveLoader: {
-    modules: ['node_modules', 'node_modules/buddhablog-cli/lib/webpack']
+    modules: ['node_modules', './lib/webpack']
   },
   module: {
     rules: [
       {
         test: /\.md$/,
-        include: [path.resolve(__dirname, 'posts')],
+        include: [path.resolve(projectRoot, 'posts')],
         use: ['buddha-post-loader']
       },
       {
         test: /\.md$/,
-        include: [path.resolve(__dirname, 'pages')],
+        include: [path.resolve(projectRoot, 'pages')],
         use: ['buddha-page-loader']
       },
       {
