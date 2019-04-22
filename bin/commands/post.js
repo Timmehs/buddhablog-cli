@@ -2,14 +2,18 @@ const path = require('path')
 const { spawnSync } = require('child_process')
 const { logInfo } = require('../util/output')
 const generateFile = require('../util/generateFile')
-const settings = require('user-settings').file('.buddha-settings')
+const settings = require('user-settings').file(
+  path.resolve(process.cwd(), '.buddhaconfig.js')
+)
 const POSTDIR = path.join(process.cwd(), 'posts')
 const editor = settings.get('editor') || 'vim'
+const author = settings.get('author')
 
 const buildPost = (title, tags, timestamp) =>
   `title: ${title}
 tags: ${tags.join(',')}
 date: ${timestamp}
+author: ${author}
 header: "https://d1u0z01nzsqzn7.cloudfront.net/images/buddhaz.jpg" # Replace this with a new image
 ----Content Below This Line----
 

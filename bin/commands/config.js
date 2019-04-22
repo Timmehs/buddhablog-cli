@@ -1,28 +1,33 @@
-#!/usr/bin/env node
+const path = require('path')
+const settings = require('user-settings').file(
+  path.resolve(process.cwd(), '.buddhaconfig.js')
+)
+const { logSuccess } = require('../util/output')
 
-const program = require('commander')
-const settings = require('user-settings').file('.buddha-settings')
-const { logSuccess, logInfo } = require('../util/output')
+const OPTIONS = ['editor', 'author', 'homepage']
 
 function printConfig() {
   const userSettings = settings.get()
-  logInfo('BuddhaBlog CLI Configuration')
-  logInfo('(`buddha config --help` for more options)')
-  logInfo('============================')
+  console.log('')
+  console.log('BuddhaBlog CLI Configuration')
+  console.log('-'.repeat(50))
   for (let key in userSettings) {
-    logInfo(`${key.padEnd(13)} | "${userSettings[key]}"`)
-    console.log('')
+    console.log(`${key.padEnd(25)} | "${userSettings[key]}"`)
   }
+  console.log('-'.repeat(50))
+  console.log('(`buddha config --help` for more options)')
 }
 
-function setConfig({ editor }, program) {
-  if (editor) {
-    settings.set('editor', editor)
-    logSuccess(`editor succesfully updated to '${editor}'  ✨`)
-    printConfig()
-  } else {
-    printConfig()
-  }
+function setOption(option, value) {
+  settings.set(option, value)
+  logSuccess(`${option} succesfully updated to '${value}'  ✨`)
+}
+
+function setConfig(command, program) {
+  OPTIONS.forEach(option => {
+    if (command[option]) setOption(option, command[option])
+  })
+  printConfig()
 }
 
 module.exports = function(program) {
@@ -32,6 +37,11 @@ module.exports = function(program) {
       '-e, --editor <editor>',
       'executable for your editor of choice.  Will be used to open newly created posts.'
     )
+    .option(
+      '-a, --author <author name>',
+      'set the main author of the blog. Used in generating posts and rendering meta tags.'
+    )
+    .option('-h, --homepage <homepage>', 'set the homepage of the blog.')
     .description('Set preferences for buddhablog-cli')
     .action(env => setConfig(env, program))
     .on('--help', function() {
