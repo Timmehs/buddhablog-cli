@@ -4,8 +4,6 @@ const program = require('commander')
 const settings = require('user-settings').file('.buddha-settings')
 const { logSuccess, logInfo } = require('../util/output')
 
-program.parse(process.argv)
-
 function printConfig() {
   const userSettings = settings.get()
   logInfo('BuddhaBlog CLI Configuration')
