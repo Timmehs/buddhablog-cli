@@ -1,0 +1,3 @@
+[submodule "buddhablog-template"]
+	path = buddhablog-template
+	url = git@github.com:Timmehs/buddhablog-template.git
