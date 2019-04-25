@@ -1,30 +1,30 @@
-const { logInfo, logSuccess } = require('../util/output')
+const { logInfo, logError } = require('../util/output')
+const { spawn } = require('child_process')
 const path = require('path')
 
+const DEV_CONFIG = path.resolve(__dirname, '../../webpack.dev.config.js')
+
 function startDevServer(command) {
-  const sourcePath = command.context || process.cwd()
-  logInfo('starting dev server at ' + sourcePath)
-  const webpack = require('webpack')
-  const WebpackDevServer = require('webpack-dev-server')
-  const config = require('../../webpack.dev.config')(sourcePath)
+  const sourcePath = path.resolve(command.context) || process.cwd()
+  logInfo('Compiling project at ' + sourcePath)
 
-  console.log(process.argv)
-  const port = 8080
+  const wdsCommand = [
+    'webpack-dev-server',
+    '--history-api-fallback',
+    '--open',
+    `--config ${DEV_CONFIG}`
+  ]
 
-  const options = {
-    publicPath: config.output.publicPath,
-    hot: true,
-    contentBase: path.resolve(sourcePath, 'build')
-  }
+  const child = spawn('yarn', wdsCommand, {
+    stdio: 'inherit',
+    shell: true,
+    env: Object.assign(process.env, { BUDDHA_ROOT: sourcePath })
+  })
 
-  const server = new WebpackDevServer(webpack(config), options)
-
-  server.listen(port, 'localhost', function(err) {
-    if (err) {
-      console.log('this a thing?')
-      console.log(err)
-    }
-    logSuccess('WebpackDevServer listening at localhost:', port)
+  child.on('error', e => {
+    logError(e)
+    child.kill()
+    process.exit()
   })
 }
 
