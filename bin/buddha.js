@@ -10,6 +10,7 @@ require('./commands/new.js')(program)
 require('./commands/post.js')(program)
 require('./commands/page.js')(program)
 require('./commands/config.js')(program)
+require('./commands/start.js')(program)
 
 if (!process.argv.slice(2).length) {
   program.outputHelp()
