@@ -5,8 +5,7 @@
   "author": "Tim Sandberg <tasandberg@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "lint": "yarn eslint ./",
-    "startTemplate": "NODE_ENV=development NODE_PATH=./buddhablog-template webpack-dev-server --hotOnly --devtool eval-source-map --history-api-fallback --open"
+    "lint": "yarn eslint ./"
   },
   "bin": {
     "buddha": "./bin/buddha.js"
