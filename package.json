@@ -10,7 +10,7 @@
   },
   "bin": {
     "buddha": "./bin/buddha.js",
-    "buddha-start": "NODE_ENV=development NODE_PATH=. webpack-dev-server --hotOnly --devtool eval-source-map --history-api-fallback --open"
+    "buddha-start": "./bin/start"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

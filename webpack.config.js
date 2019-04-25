@@ -3,7 +3,9 @@ const fs = require('fs')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const projectRoot = path.resolve(process.env.NODE_PATH)
+const projectRoot = process.cwd()
+console.log(projectRoot)
+
 const { logSuccess, logInfo } = require('./bin/util/output')
 
 let htmlTemplateFilename = 'html-template.ejs'
@@ -33,7 +35,7 @@ module.exports = {
     contentBase: path.resolve(projectRoot, 'build'),
     hot: true
   },
-  devtool: ['source-map'],
+  devtool: 'source-map',
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.ContextReplacementPlugin(
