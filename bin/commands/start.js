@@ -1,16 +1,9 @@
-#!/usr/bin/env node
+const { logInfo, logSuccess } = require('../util/output')
+const path = require('path')
 
-function startDevServer(path) {
-  console.log(path)
-
-  if (path) {
-    console.log('we got a path')
-    console.log(path)
-  } else {
-    console.log('assuming project root')
-  }
-  const sourcePath = path || process.cwd()
-
+function startDevServer(command) {
+  const sourcePath = command.context || process.cwd()
+  logInfo('starting dev server at ' + sourcePath)
   const webpack = require('webpack')
   const WebpackDevServer = require('webpack-dev-server')
   const config = require('../../webpack.dev.config')(sourcePath)
@@ -21,20 +14,17 @@ function startDevServer(path) {
   const options = {
     publicPath: config.output.publicPath,
     hot: true,
-    inline: true,
-    stats: {
-      colors: true
-    },
-    open: true
+    contentBase: path.resolve(sourcePath, 'build')
   }
 
   const server = new WebpackDevServer(webpack(config), options)
 
   server.listen(port, 'localhost', function(err) {
     if (err) {
+      console.log('this a thing?')
       console.log(err)
     }
-    console.log('WebpackDevServer listening at localhost:', port)
+    logSuccess('WebpackDevServer listening at localhost:', port)
   })
 }
 
@@ -42,7 +32,7 @@ module.exports = function(program) {
   program
     .command('start')
     .option(
-      '-c, --context',
+      '-c, --context <rootDir>',
       'Context in which to run dev-server. Must be the root path of your project.'
     )
     .description(

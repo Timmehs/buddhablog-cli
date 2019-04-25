@@ -24,6 +24,7 @@ function templateFilePath(srcPath) {
 
 module.exports = function(srcPath) {
   return {
+    context: path.resolve(__dirname),
     mode: 'development',
     entry: {
       main: path.resolve(srcPath, 'src', 'index.js'),
@@ -33,10 +34,6 @@ module.exports = function(srcPath) {
       filename: 'assets/[name].js',
       path: path.resolve(srcPath, 'build'),
       publicPath: '/'
-    },
-    devServer: {
-      contentBase: path.resolve(srcPath, 'build'),
-      hot: true
     },
     devtool: 'source-map',
     plugins: [
