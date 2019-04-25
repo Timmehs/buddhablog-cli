@@ -1,11 +1,22 @@
 const { logInfo, logError } = require('../util/output')
 const { spawn } = require('child_process')
 const path = require('path')
+const fs = require('fs')
 
 const DEV_CONFIG = path.resolve(__dirname, '../../webpack.dev.config.js')
 
 function startDevServer(command) {
-  const sourcePath = path.resolve(command.context) || process.cwd()
+  const sourcePath = command.context
+    ? path.resolve(command.context)
+    : process.cwd()
+
+  if (!fs.existsSync(path.resolve(sourcePath, 'src'))) {
+    logError(
+      `Expected to find src/ directory in ${sourcePath}. Please run from within a buddhablog project`
+    )
+    process.exit()
+  }
+
   logInfo('Compiling project at ' + sourcePath)
 
   const wdsCommand = [
