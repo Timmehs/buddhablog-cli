@@ -25,76 +25,90 @@ function templateFilePath(BUDDHA_ROOT) {
 /**
  * `BUDDHA_ROOT` is the root directory of the Buddhablog project to be compiled
  */
-const BUDDHA_ROOT = process.env.BUDDHA_ROOT || process.cwd()
-
-module.exports = {
-  context: path.resolve(__dirname),
-  mode: 'development',
-  entry: {
-    main: path.join(BUDDHA_ROOT, 'src', 'index.js'),
-    blog: path.join(BUDDHA_ROOT, 'src', 'store.js')
-  },
-  output: {
-    filename: 'assets/[name].js',
-    path: path.join(BUDDHA_ROOT, 'build'),
-    publicPath: '/'
-  },
-  devtool: 'source-map',
-  plugins: [
-    new CleanWebpackPlugin(),
-    new webpack.ContextReplacementPlugin(
-      /highlight\.js\/lib\/languages$/,
-      new RegExp(`^./(ruby|javascript|css|scss|bash)`)
-    ),
-    new HtmlWebpackPlugin({
-      title: require('./package.json').name,
-      template: templateFilePath(BUDDHA_ROOT),
-      inject: false
-    }),
-    new webpack.HotModuleReplacementPlugin()
-  ],
-  devServer: {
-    hot: true,
-    contentBase: path.resolve(BUDDHA_ROOT, 'build')
-  },
-  resolveLoader: {
-    modules: ['node_modules', './lib/webpack']
-  },
-  module: {
-    rules: [
-      {
-        test: /\.md$/,
-        include: [path.resolve(BUDDHA_ROOT, 'posts')],
-        use: ['buddha-post-loader']
-      },
-      {
-        test: /\.md$/,
-        include: [path.resolve(BUDDHA_ROOT, 'pages')],
-        use: ['buddha-page-loader']
-      },
-      {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
-            plugins: [
-              'import-glob',
-              '@babel/plugin-proposal-object-rest-spread',
-              'react-hot-loader/babel'
-            ]
-          }
-        }
-      },
-      {
-        test: /\.(sa|sc|c)ss$/,
-        use: [
-          { loader: 'style-loader' }, // creates style nodes from JS strings
-          { loader: 'css-loader' }, // translates CSS into CommonJS
-          { loader: 'sass-loader' } // compiles Sass to CSS
-        ]
+module.exports = env => {
+  const BUDDHA_ROOT = env.BUDDHA_ROOT || process.cwd()
+  return {
+    context: path.resolve(__dirname),
+    mode: 'development',
+    entry: {
+      main: path.resolve(__dirname, 'src', 'index.js')
+    },
+    output: {
+      filename: 'assets/[name].js',
+      chunkFilename: 'assets/[name].bundle.js',
+      path: path.join(BUDDHA_ROOT, 'build'),
+      publicPath: '/'
+    },
+    resolve: {
+      alias: {
+        client: path.resolve(BUDDHA_ROOT, 'src'),
+        blog: path.resolve(BUDDHA_ROOT, 'posts'),
+        pages: path.resolve(BUDDHA_ROOT, 'pages')
       }
-    ]
+    },
+    devtool: 'source-map',
+    plugins: [
+      new CleanWebpackPlugin(),
+      new webpack.ContextReplacementPlugin(
+        /highlight\.js\/lib\/languages$/,
+        new RegExp(`^./(ruby|javascript|css|scss|bash)`)
+      ),
+      new HtmlWebpackPlugin({
+        title: require('./package.json').name,
+        template: templateFilePath(BUDDHA_ROOT),
+        inject: false
+      }),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('development'),
+        'process.env.BUDDHA_ROOT': JSON.stringify(BUDDHA_ROOT),
+        'process.env.BUDDHA_SRC': JSON.stringify(BUDDHA_ROOT)
+      }),
+      new webpack.HotModuleReplacementPlugin()
+    ],
+    devServer: {
+      hot: true,
+      contentBase: path.resolve(BUDDHA_ROOT, 'build')
+    },
+    resolveLoader: {
+      modules: ['node_modules', './lib/webpack']
+    },
+    module: {
+      rules: [
+        {
+          test: /\.md$/,
+          include: [path.resolve(BUDDHA_ROOT, 'posts')],
+          use: ['buddha-post-loader']
+        },
+        {
+          test: /\.md$/,
+          include: [path.resolve(BUDDHA_ROOT, 'pages')],
+          use: ['buddha-page-loader']
+        },
+        {
+          test: /\.js$/,
+          exclude: /(node_modules)/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env', '@babel/preset-react'],
+              plugins: [
+                'import-glob',
+                '@babel/plugin-proposal-object-rest-spread',
+                '@babel/plugin-syntax-dynamic-import'
+                // 'react-hot-loader/babel'
+              ]
+            }
+          }
+        },
+        {
+          test: /\.(sa|sc|c)ss$/,
+          use: [
+            { loader: 'style-loader' }, // creates style nodes from JS strings
+            { loader: 'css-loader' }, // translates CSS into CommonJS
+            { loader: 'sass-loader' } // compiles Sass to CSS
+          ]
+        }
+      ]
+    }
   }
 }

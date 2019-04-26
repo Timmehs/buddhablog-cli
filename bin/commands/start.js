@@ -23,7 +23,8 @@ function startDevServer(command) {
     'webpack-dev-server',
     '--history-api-fallback',
     '--open',
-    `--config ${DEV_CONFIG}`
+    `--config ${DEV_CONFIG}`,
+    `--env.BUDDHA_ROOT=${sourcePath}`
   ]
 
   const child = spawn('yarn', wdsCommand, {
