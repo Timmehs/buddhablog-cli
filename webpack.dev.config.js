@@ -94,8 +94,7 @@ module.exports = env => {
               plugins: [
                 'import-glob',
                 '@babel/plugin-proposal-object-rest-spread',
-                '@babel/plugin-syntax-dynamic-import'
-                // 'react-hot-loader/babel'
+                'react-hot-loader/babel'
               ]
             }
           }
