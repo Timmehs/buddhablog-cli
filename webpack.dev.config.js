@@ -43,7 +43,8 @@ module.exports = env => {
       alias: {
         client: path.resolve(BUDDHA_ROOT, 'src'),
         blog: path.resolve(BUDDHA_ROOT, 'posts'),
-        pages: path.resolve(BUDDHA_ROOT, 'pages')
+        pages: path.resolve(BUDDHA_ROOT, 'pages'),
+        'react-dom': '@hot-loader/react-dom'
       }
     },
     devtool: 'source-map',
