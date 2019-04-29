@@ -2,12 +2,9 @@ const path = require('path')
 const { spawnSync } = require('child_process')
 const { logInfo } = require('../util/output')
 const generateFile = require('../util/generateFile')
-const settings = require('user-settings').file(
-  path.resolve(process.cwd(), '.buddhaconfig.js')
-)
+
 const POSTDIR = path.join(process.cwd(), 'posts')
-const editor = settings.get('editor') || 'vim'
-const author = settings.get('author')
+let editor, author
 
 const buildPost = (title, tags, timestamp) =>
   `title: ${title}
@@ -21,6 +18,11 @@ write content here
 `
 
 function createPost(title = '', tags = []) {
+  const settings = require('user-settings').file(
+    path.resolve(process.cwd(), '.buddhaconfig.js')
+  )
+  editor = settings.get('editor') || 'vim'
+  author = settings.get('author')
   logInfo('Generating timestamp...')
   const timeStamp = spawnSync('date', ['+%Y-%m-%dT%H:%M:%S'])
     .output[1].toString()

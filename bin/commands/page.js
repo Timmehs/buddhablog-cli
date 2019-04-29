@@ -2,9 +2,12 @@ const path = require('path')
 const { spawnSync } = require('child_process')
 const { logInfo } = require('../util/output')
 const generateFile = require('../util/generateFile')
-const settings = require('user-settings').file('.buddha-settings')
 const PAGEDIR = path.join(process.cwd(), 'pages')
-const editor = settings.get('editor') || 'vim'
+
+function getEditor() {
+  const settings = require('user-settings').file('.buddha-settings')
+  return settings.get('editor') || 'vim'
+}
 
 const buildPost = title =>
   `title: ${title}
@@ -15,6 +18,7 @@ write content here
 `
 
 function createPage(title = '') {
+  const editor = getEditor()
   const newPagePath = path.join(
     PAGEDIR,
     `${title.toLowerCase().replace(' ', '-')}.md`
