@@ -2,11 +2,11 @@ const path = require('path')
 const { logSuccess } = require('../util/output')
 
 const OPTIONS = ['editor', 'author', 'homepage']
+const settings = require('user-settings').file(
+  path.resolve(process.cwd(), '.buddhaconfig.js')
+)
 
 function printConfig() {
-  const settings = require('user-settings').file(
-    path.resolve(process.cwd(), '.buddhaconfig.js')
-  )
   const userSettings = settings.get()
   console.log('')
   console.log('BuddhaBlog CLI Configuration')
