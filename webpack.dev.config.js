@@ -44,7 +44,12 @@ module.exports = env => {
         client: path.resolve(BUDDHA_ROOT, 'src'),
         blog: path.resolve(BUDDHA_ROOT, 'posts'),
         pages: path.resolve(BUDDHA_ROOT, 'pages'),
-        'react-dom': '@hot-loader/react-dom'
+        'react-dom': '@hot-loader/react-dom',
+        'react-hot-loader': path.resolve(
+          __dirname,
+          'node_modules',
+          'react-hot-loader'
+        )
       }
     },
     devtool: 'source-map',
@@ -93,9 +98,9 @@ module.exports = env => {
             options: {
               presets: ['@babel/preset-env', '@babel/preset-react'],
               plugins: [
+                'react-hot-loader/babel',
                 'import-glob',
-                '@babel/plugin-proposal-object-rest-spread',
-                'react-hot-loader/babel'
+                '@babel/plugin-proposal-object-rest-spread'
               ]
             }
           }

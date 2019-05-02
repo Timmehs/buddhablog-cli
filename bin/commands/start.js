@@ -28,6 +28,7 @@ function startDevServer(command) {
   ]
 
   const child = spawn('yarn', wdsCommand, {
+    cwd: path.resolve(__dirname, '../..'),
     stdio: 'inherit',
     shell: true,
     env: Object.assign(process.env, { BUDDHA_ROOT: sourcePath })
