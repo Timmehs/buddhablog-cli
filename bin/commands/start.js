@@ -3,12 +3,15 @@ const { spawn } = require('child_process')
 const path = require('path')
 const fs = require('fs')
 
-const DEV_CONFIG = path.resolve(__dirname, '../../webpack.dev.config.js')
+const { BUDDHABLOG_CLI_ROOT, BUDDHABLOG_CALLER_ROOT } = process.env
+
+const DEV_CONFIG = path.resolve(BUDDHABLOG_CLI_ROOT, 'webpack.dev.js')
 
 function startDevServer(command) {
   const sourcePath = command.context
     ? path.resolve(command.context)
-    : process.cwd()
+    : BUDDHABLOG_CALLER_ROOT
+  console.log('SOURCE PATH BABY', sourcePath)
 
   if (!fs.existsSync(path.resolve(sourcePath, 'src'))) {
     logError(
@@ -31,7 +34,10 @@ function startDevServer(command) {
     cwd: path.resolve(__dirname, '../..'),
     stdio: 'inherit',
     shell: true,
-    env: Object.assign(process.env, { BUDDHA_ROOT: sourcePath })
+    env: Object.assign(process.env, {
+      BLOG_ROOT: sourcePath,
+      BUDDHABLOG_CLI_ROOT: BUDDHABLOG_CLI_ROOT
+    })
   })
 
   child.on('error', e => {
@@ -48,13 +54,11 @@ module.exports = function(program) {
       '-c, --context <rootDir>',
       'Context in which to run dev-server. Must be the root path of your project.'
     )
-    .description(
-      'Start buddhablog development environment, for blogging and customiziation work of your website.'
-    )
+    .description('Start BuddhaBlog development server.')
     .action(startDevServer)
     .on('--help', function() {
       console.log(
-        "\nBuddhablog development server uses a default webpack configuration with loaders for react, css, scss, and Buddhablog markdown files (pages and posts).'"
+        '\nBuddhablog development server uses a default webpack configuration with loaders for react, css, scss, and Buddhablog markdown files (pages and posts).'
       )
       console.log('\nExamples: ')
       console.log('\nFrom project root: ')

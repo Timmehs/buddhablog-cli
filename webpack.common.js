@@ -1,78 +1,80 @@
 const path = require('path')
-const fs = require('fs')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const projectRoot = process.cwd()
-console.log(projectRoot)
 
-const { logSuccess, logInfo } = require('./bin/util/output')
-
-let htmlTemplateFilename = 'html-template.ejs'
-let templatePath = path.join(projectRoot, 'src', htmlTemplateFilename)
-
-if (fs.existsSync(templatePath)) {
-  logSuccess(`Template found! Using ${templatePath}.`)
-} else {
-  logInfo(
-    `No template found at ${templatePath}, using default. To customize place ${htmlTemplateFilename} in src/.`
-  )
-  templatePath = path.join(__dirname, htmlTemplateFilename)
-}
+const htmlTemplateFilename = 'html-template.ejs'
+const { BLOG_ROOT, BUDDHABLOG_CLI_ROOT } = process.env
 
 module.exports = {
-  context: projectRoot,
+  context: BLOG_ROOT,
   entry: {
-    main: path.resolve(projectRoot, 'src', 'index.js'),
-    blog: path.resolve(projectRoot, 'src', 'store.js')
+    main: path.resolve(__dirname, 'src', 'index.js')
   },
   output: {
     filename: 'assets/[name].js',
-    path: path.resolve(projectRoot, 'build'),
+    chunkFilename: 'assets/[name].bundle.js',
+    path: path.resolve(BLOG_ROOT, 'build'),
     publicPath: '/'
   },
-  devServer: {
-    contentBase: path.resolve(projectRoot, 'build'),
-    hot: true
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
   },
-  devtool: 'source-map',
+  resolve: {
+    alias: {
+      util: path.resolve(__dirname, 'src', 'util'),
+      client: path.resolve(BLOG_ROOT)
+    }
+  },
   plugins: [
-    new CleanWebpackPlugin(),
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: [
+        '**/*',
+        'index.html',
+        '!CNAME',
+        '!favicon.ico',
+        '!README.md'
+      ]
+    }),
     new webpack.ContextReplacementPlugin(
       /highlight\.js\/lib\/languages$/,
       new RegExp(`^./(ruby|javascript|css|scss|bash)`)
     ),
     new HtmlWebpackPlugin({
       title: require('./package.json').name,
-      template: templatePath,
+      template: path.resolve(BLOG_ROOT, 'src', htmlTemplateFilename),
       inject: false
-    }),
-    new webpack.HotModuleReplacementPlugin()
+    })
   ],
   resolveLoader: {
-    modules: ['node_modules', './lib/webpack']
+    modules: [
+      'node_modules',
+      path.resolve(BUDDHABLOG_CLI_ROOT, 'lib', 'webpack')
+    ]
   },
   module: {
     rules: [
       {
         test: /\.md$/,
-        include: [path.resolve(projectRoot, 'posts')],
+        include: [path.resolve(BLOG_ROOT, 'posts')],
         use: ['buddha-post-loader']
       },
       {
         test: /\.md$/,
-        include: [path.resolve(projectRoot, 'pages')],
+        include: [path.resolve(BLOG_ROOT, 'pages')],
         use: ['buddha-page-loader']
       },
       {
         test: /\.js$/,
         exclude: /(node_modules)/,
         use: {
-          loader: 'babel-loader',
+          loader: require.resolve('babel-loader'),
           options: {
             presets: ['@babel/preset-env', '@babel/preset-react'],
             plugins: [
-              'import-glob',
+              'babel-plugin-import-glob',
               '@babel/plugin-proposal-object-rest-spread',
               'react-hot-loader/babel'
             ]
